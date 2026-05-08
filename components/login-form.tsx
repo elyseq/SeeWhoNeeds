@@ -33,13 +33,30 @@ export function LoginForm({
     setError(null);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data: authData, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
       if (error) throw error;
-      // Update this route to redirect to an authenticated route. The user already has an active session.
-      router.push("/protected");
+
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      const { data: profile, error: profileError } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", authData.user.id)  // use authData.user directly, not a second getUser() call
+        .single();
+
+        console.log("Profile:", profile);
+        console.log("Profile error:", profileError);
+
+      if (!profile) {
+        router.push("/onboarding");
+      } else if (profile.role === "shelter") {
+        router.push("/dashboard/shelter");
+      } else {
+        router.push("/dashboard/donor");
+      }
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "An error occurred");
     } finally {
