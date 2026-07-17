@@ -1,5 +1,4 @@
 import { createClient } from "@/lib/supabase/server";
-import { connection } from "next/server";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -23,7 +22,6 @@ export default async function NeedsPage({
 }: {
   searchParams: Promise<{ category?: string; urgency?: string }>;
 }) {
-  await connection();
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   const params = await searchParams;

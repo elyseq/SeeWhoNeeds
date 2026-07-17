@@ -1,5 +1,4 @@
 import { createClient } from "@/lib/supabase/server";
-import { connection } from "next/server";
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -24,7 +23,6 @@ export default async function NeedDetailPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  await connection();
   const supabase = await createClient();
   const { id } = await params;
 
